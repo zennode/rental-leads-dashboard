@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YellowBrick Management — Rental Leads Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg-primary: #0f1117;
+    --bg-card: #1a1d27;
+    --bg-card-hover: #222633;
+    --border: #2a2e3d;
+    --text-primary: #e8eaf0;
+    --text-secondary: #9ca3b4;
+    --text-muted: #6b7280;
+    --accent-gold: #f5c842;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+    --accent-blue: #3b82f6;
+    --accent-purple: #a855f7;
+    --accent-orange: #f97316;
+    --accent-cyan: #06b6d4;
+    --accent-teal: #14b8a6;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #252a3a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--accent-gold), #d4a017);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #1a1d27;
+    flex-shrink: 0;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .last-updated {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .portfolio-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    background: rgba(245, 200, 66, 0.1);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(245, 200, 66, 0.2);
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(245, 200, 66, 0.1);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .kpi-card.gold::before { background: var(--accent-gold); }
+  .kpi-card.green::before { background: var(--accent-green); }
+  .kpi-card.blue::before { background: var(--accent-blue); }
+  .kpi-card.purple::before { background: var(--accent-purple); }
+  .kpi-card.red::before { background: var(--accent-red); }
+  .kpi-card.orange::before { background: var(--accent-orange); }
+  .kpi-card.cyan::before { background: var(--accent-cyan); }
+  .kpi-card.teal::before { background: var(--accent-teal); }
+
+  .kpi-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .kpi-card.gold .kpi-value { color: var(--accent-gold); }
+  .kpi-card.green .kpi-value { color: var(--accent-green); }
+  .kpi-card.blue .kpi-value { color: var(--accent-blue); }
+  .kpi-card.purple .kpi-value { color: var(--accent-purple); }
+  .kpi-card.red .kpi-value { color: var(--accent-red); }
+  .kpi-card.orange .kpi-value { color: var(--accent-orange); }
+  .kpi-card.cyan .kpi-value { color: var(--accent-cyan); }
+  .kpi-card.teal .kpi-value { color: var(--accent-teal); }
+
+  .kpi-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .kpi-trend.up { color: var(--accent-green); }
+  .kpi-trend.down { color: var(--accent-red); }
+  .kpi-trend.neutral { color: var(--text-muted); }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Chart sections */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .chart-card.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .chart-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+  }
+
+  /* Pipeline Table */
+  .pipeline-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+
+  .pipeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+
+  .pipeline-table th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .pipeline-table td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(42, 46, 61, 0.5);
+    color: var(--text-secondary);
+  }
+
+  .pipeline-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .source-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .source-badge.website {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+  }
+
+  .source-badge.zillow {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+  }
+
+  .source-badge.facebook {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+  }
+
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .status-dot::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot.new::before { background: var(--accent-blue); }
+  .status-dot.contacted::before { background: var(--accent-gold); }
+  .status-dot.qualified::before { background: var(--accent-green); }
+  .status-dot.showing::before { background: var(--accent-purple); }
+  .status-dot.applied::before { background: var(--accent-cyan); }
+  .status-dot.leased::before { background: var(--accent-teal); }
+  .status-dot.lost::before { background: var(--accent-red); }
+
+  /* Automation Section */
+  .automation-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .automation-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .automation-section .section-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .automation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .automation-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: all 0.2s;
+  }
+
+  .automation-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(245, 200, 66, 0.3);
+  }
+
+  .automation-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .automation-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .impact-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .impact-badge.high {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+  }
+
+  .impact-badge.medium {
+    background: rgba(249, 115, 22, 0.15);
+    color: #fb923c;
+  }
+
+  /* API Integration Notes */
+  .api-note {
+    background: rgba(245, 200, 66, 0.06);
+    border: 1px solid rgba(245, 200, 66, 0.2);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+
+  .api-note h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .api-note p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .api-note code {
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--accent-gold);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .charts-grid {
+      grid-template-columns: 1fr;
+    }
+    .kpi-grid {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .header h1 { font-size: 18px; }
+    .kpi-value { font-size: 26px; }
+    .container { padding: 12px; }
+    .header { padding: 14px 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .kpi-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .kpi-card { padding: 14px; }
+    .kpi-value { font-size: 22px; }
+    .automation-grid { grid-template-columns: 1fr; }
+    .chart-container { height: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">YB</div>
+    <div>
+      <h1>Rental Leads Dashboard</h1>
+      <div class="header-subtitle">YellowBrick Management &mdash; Western MA Portfolio</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="portfolio-badge">91 Properties &bull; 338 Units</div>
+    <div class="last-updated" id="lastUpdated">Updated: --</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <span class="filter-label">Period:</span>
+    <button class="filter-btn" data-period="7" onclick="setPeriod(7)">7 Days</button>
+    <button class="filter-btn active" data-period="30" onclick="setPeriod(30)">30 Days</button>
+    <button class="filter-btn" data-period="90" onclick="setPeriod(90)">90 Days</button>
+    <button class="filter-btn" data-period="365" onclick="setPeriod(365)">12 Months</button>
+  </div>
+
+  <!-- API Integration Note -->
+  <div class="api-note">
+    <h3>&#9889; Rent Manager API Integration</h3>
+    <p>
+      This dashboard is configured for live data from the Rent Manager API at
+      <code>https://yellowbrick.rentmanager.com/API/</code>.
+      To activate, set your API key in the <code>RM_API_KEY</code> variable below and uncomment
+      the <code>fetchRentManagerData()</code> call. Currently displaying sample data across all
+      91 properties. A daily scheduled task can refresh this data automatically &mdash; see notes at bottom.
+    </p>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card gold">
+      <div class="kpi-label">Total Leads (30d)</div>
+      <div class="kpi-value" id="kpiTotalLeads">--</div>
+      <div class="kpi-trend up" id="kpiTotalLeadsTrend"></div>
+      <div class="kpi-sub" id="kpiTotalLeadsSub"></div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Avg Response Time</div>
+      <div class="kpi-value" id="kpiResponseTime">--</div>
+      <div class="kpi-trend" id="kpiResponseTimeTrend"></div>
+      <div class="kpi-sub">Target: &lt; 1 hour</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Qualification Rate</div>
+      <div class="kpi-value" id="kpiQualRate">--</div>
+      <div class="kpi-trend" id="kpiQualRateTrend"></div>
+      <div class="kpi-sub" id="kpiQualRateSub"></div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Lead-to-Lease Rate</div>
+      <div class="kpi-value" id="kpiLeaseRate">--</div>
+      <div class="kpi-trend" id="kpiLeaseRateTrend"></div>
+      <div class="kpi-sub">Industry avg: 8-12%</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Avg Processing Time</div>
+      <div class="kpi-value" id="kpiProcessTime">--</div>
+      <div class="kpi-trend" id="kpiProcessTimeTrend"></div>
+      <div class="kpi-sub">Lead → application submitted</div>
+    </div>
+    <div class="kpi-card cyan">
+      <div class="kpi-label">Active Pipeline</div>
+      <div class="kpi-value" id="kpiPipeline">--</div>
+      <div class="kpi-trend neutral" id="kpiPipelineTrend"></div>
+      <div class="kpi-sub">Open leads in progress</div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-label">Vacancy Rate</div>
+      <div class="kpi-value" id="kpiVacancy">--</div>
+      <div class="kpi-trend" id="kpiVacancyTrend"></div>
+      <div class="kpi-sub" id="kpiVacancySub"></div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Cost Per Lead</div>
+      <div class="kpi-value" id="kpiCPL">--</div>
+      <div class="kpi-trend" id="kpiCPLTrend"></div>
+      <div class="kpi-sub">Across all paid channels</div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="charts-grid">
+    <div class="chart-card full-width">
+      <div class="chart-title">Lead Volume Trend</div>
+      <div class="chart-subtitle">Daily leads by source over the past 30 days</div>
+      <div class="chart-container"><canvas id="chartLeadVolume"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Leads by Source</div>
+      <div class="chart-subtitle">Distribution across channels</div>
+      <div class="chart-container"><canvas id="chartLeadSource"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Pipeline Funnel</div>
+      <div class="chart-subtitle">Conversion at each stage</div>
+      <div class="chart-container"><canvas id="chartFunnel"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Response Time Distribution</div>
+      <div class="chart-subtitle">Hours to first contact</div>
+      <div class="chart-container"><canvas id="chartResponseTime"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Conversion Rate by Source</div>
+      <div class="chart-subtitle">Lead-to-lease % per channel</div>
+      <div class="chart-container"><canvas id="chartConversionBySource"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Pipeline Table -->
+  <div class="pipeline-section">
+    <div class="chart-title" style="margin-bottom: 4px;">Recent Lead Activity</div>
+    <div class="chart-subtitle" style="margin-bottom: 16px;">Last 15 leads with current status</div>
+    <table class="pipeline-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Property Interest</th>
+          <th>Status</th>
+          <th>Response Time</th>
+          <th>Days in Pipeline</th>
+        </tr>
+      </thead>
+      <tbody id="pipelineBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Automation Recommendations -->
+  <div class="automation-section">
+    <h2>&#9881; Automation Recommendations</h2>
+    <div class="section-subtitle">Concrete steps to improve lead response and processing at YellowBrick</div>
+
+    <div class="automation-grid">
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-green)">&#9679;</span> Auto-Acknowledge All Leads</h3>
+        <p>Set up an instant auto-reply (email + SMS) when any new lead hits Rent Manager from any source. Include a branded message, available unit details, and a link to your application. Zillow leads especially need fast contact &mdash; studies show a 5-minute response gets 21x more conversions.</p>
+        <span class="impact-badge high">High Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-green)">&#9679;</span> Zillow Lead Routing via Zapier</h3>
+        <p>Connect Zillow leads directly to Rent Manager using Zapier or Make.com. Currently leads may sit in email before being manually entered. Automate the capture so every Zillow inquiry creates a prospect in Rent Manager instantly &mdash; no leads fall through the cracks.</p>
+        <span class="impact-badge high">High Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-green)">&#9679;</span> Facebook Lead Form Integration</h3>
+        <p>Use Facebook Lead Ads with a Zapier workflow that pushes form submissions directly into Rent Manager as prospects. Add UTM parameters to track which Facebook ad campaigns generate the most qualified leads and optimize spend accordingly.</p>
+        <span class="impact-badge high">High Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-blue)">&#9679;</span> Pre-Qualification Screening Bot</h3>
+        <p>Add a chatbot or qualification form to your website that asks key screening questions (income, pets, move-in date, credit range) before the lead is handed to your team. This filters out unqualified leads early and lets your team focus on prospects who will actually convert.</p>
+        <span class="impact-badge high">High Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-orange)">&#9679;</span> Automated Follow-Up Sequences</h3>
+        <p>Build a 5-touch drip sequence in Rent Manager or via Mailchimp/SendGrid: Day 0 auto-reply, Day 1 showing invite, Day 3 check-in, Day 7 last call, Day 14 re-engage. Leads that go cold often just need a nudge &mdash; this keeps your pipeline warm without staff effort.</p>
+        <span class="impact-badge medium">Medium Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-orange)">&#9679;</span> Self-Service Showing Scheduler</h3>
+        <p>Integrate a tool like Calendly, ShowMojo, or Tenant Turner so prospects can book their own showings from the auto-reply email. Eliminates back-and-forth scheduling and reduces your team's workload. Works especially well for your higher-volume properties.</p>
+        <span class="impact-badge medium">Medium Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-purple)">&#9679;</span> Rent Manager API Daily Sync</h3>
+        <p>Schedule a daily script (cron or GitHub Actions) that pulls prospect data from the Rent Manager API, computes KPIs, and regenerates this dashboard. Deploy to GitHub Pages at zennode.github.io for remote access. Sample endpoint: <code style="font-size:11px">GET /Prospects?filters=DateCreated ge '2026-04-01'</code></p>
+        <span class="impact-badge medium">Medium Impact</span>
+      </div>
+
+      <div class="automation-card">
+        <h3><span style="color:var(--accent-purple)">&#9679;</span> Lead Scoring Model</h3>
+        <p>Assign scores to leads based on source quality, income-to-rent ratio, responsiveness, and move-in timeline. Route high-score leads to immediate personal outreach and lower-score leads to automated nurture sequences. Prioritizes staff time on the leads most likely to convert.</p>
+        <span class="impact-badge medium">Medium Impact</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Refresh Note -->
+  <div class="api-note">
+    <h3>&#128338; Daily Refresh Setup</h3>
+    <p>
+      To update this dashboard daily, set up a GitHub Actions workflow or a Cowork scheduled task that:
+      (1) Calls the Rent Manager API at <code>https://yellowbrick.rentmanager.com/API/Prospects</code> with your API credentials,
+      (2) Computes the KPIs from the prospect records (dates, statuses, source tags),
+      (3) Writes the updated data into this HTML file's <code>SAMPLE_DATA</code> object,
+      (4) Commits and pushes to the <code>gh-pages</code> branch.
+      The Cowork <strong>schedule</strong> skill can create a recurring task for this &mdash; ask me to set one up.
+    </p>
+  </div>
+
+</div>
+
+<div class="footer">
+  YellowBrick Management &bull; Rental Leads Dashboard &bull; Built for zennode.github.io
+</div>
+
+<script>
+// =============================================================================
+// RENT MANAGER API CONFIGURATION
+// =============================================================================
+// To connect live data, set your API key and uncomment fetchRentManagerData()
+const RM_API_BASE = 'https://yellowbrick.rentmanager.com/API';
+const RM_API_KEY = '';  // Set your Rent Manager API key here
+
+// =============================================================================
+// SAMPLE DATA — Replace with live API data
+// =============================================================================
+const SAMPLE_DATA = {
+  // Summary KPIs
+  kpis: {
+    totalLeads: 147,
+    totalLeadsPrior: 128,
+    avgResponseTimeHrs: 2.4,
+    avgResponseTimePriorHrs: 3.8,
+    qualificationRate: 62,
+    qualificationRatePrior: 55,
+    leadToLeaseRate: 14.3,
+    leadToLeaseRatePrior: 11.8,
+    avgProcessingDays: 6.2,
+    avgProcessingDaysPrior: 8.1,
+    activePipeline: 43,
+    activePipelinePrior: 38,
+    vacancyRate: 4.7,
+    vacancyRatePrior: 5.1,
+    vacantUnits: 16,
+    costPerLead: 23.50,
+    costPerLeadPrior: 28.10,
+  },
+
+  // Daily lead volume (last 30 days)
+  dailyLeads: (() => {
+    const days = [];
+    const now = new Date(2026, 3, 22); // April 22, 2026
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dow = d.getDay();
+      const baseWebsite = dow === 0 || dow === 6 ? 1 : 3;
+      const baseZillow = dow === 0 || dow === 6 ? 1 : 2;
+      const baseFB = Math.random() > 0.6 ? 1 : 0;
+      days.push({
+        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        website: baseWebsite + Math.floor(Math.random() * 3),
+        zillow: baseZillow + Math.floor(Math.random() * 2),
+        facebook: baseFB + Math.floor(Math.random() * 2),
+      });
+    }
+    return days;
+  })(),
+
+  // Source breakdown
+  leadsBySource: {
+    'YB Website': 68,
+    'Zillow': 52,
+    'Facebook': 27,
+  },
+
+  // Funnel stages
+  funnel: [
+    { stage: 'New Leads', count: 147 },
+    { stage: 'Contacted', count: 126 },
+    { stage: 'Qualified', count: 91 },
+    { stage: 'Showing Scheduled', count: 58 },
+    { stage: 'Application Submitted', count: 34 },
+    { stage: 'Approved', count: 24 },
+    { stage: 'Lease Signed', count: 21 },
+  ],
+
+  // Response time distribution
+  responseTimeDist: [
+    { range: '< 30 min', count: 28 },
+    { range: '30m - 1h', count: 34 },
+    { range: '1h - 2h', count: 31 },
+    { range: '2h - 4h', count: 22 },
+    { range: '4h - 8h', count: 18 },
+    { range: '8h - 24h', count: 10 },
+    { range: '> 24h', count: 4 },
+  ],
+
+  // Conversion by source
+  conversionBySource: {
+    'YB Website': { leads: 68, leased: 12, rate: 17.6 },
+    'Zillow': { leads: 52, leased: 6, rate: 11.5 },
+    'Facebook': { leads: 27, leased: 3, rate: 11.1 },
+  },
+
+  // Recent leads
+  recentLeads: [
+    { date: 'Apr 22', name: 'Sarah M.', source: 'website', property: '45 Elm St, Unit 3B', status: 'new', responseTime: '--', days: 0 },
+    { date: 'Apr 22', name: 'James K.', source: 'zillow', property: '120 Main St, Unit 2A', status: 'new', responseTime: '--', days: 0 },
+    { date: 'Apr 21', name: 'Maria L.', source: 'website', property: '78 Oak Ave, Unit 1', status: 'contacted', responseTime: '0.4 hrs', days: 1 },
+    { date: 'Apr 21', name: 'Robert P.', source: 'facebook', property: '200 Pine St, Unit 4C', status: 'contacted', responseTime: '1.2 hrs', days: 1 },
+    { date: 'Apr 20', name: 'Lisa W.', source: 'zillow', property: '45 Elm St, Unit 1A', status: 'qualified', responseTime: '0.8 hrs', days: 2 },
+    { date: 'Apr 19', name: 'David H.', source: 'website', property: '310 Maple Dr, Unit 2', status: 'showing', responseTime: '1.5 hrs', days: 3 },
+    { date: 'Apr 18', name: 'Jennifer C.', source: 'zillow', property: '88 Birch Ln, Unit 3', status: 'qualified', responseTime: '2.1 hrs', days: 4 },
+    { date: 'Apr 17', name: 'Michael T.', source: 'website', property: '120 Main St, Unit 1B', status: 'applied', responseTime: '0.6 hrs', days: 5 },
+    { date: 'Apr 16', name: 'Amanda R.', source: 'facebook', property: '55 Cedar St, Unit 2D', status: 'showing', responseTime: '3.4 hrs', days: 6 },
+    { date: 'Apr 15', name: 'Chris B.', source: 'website', property: '78 Oak Ave, Unit 4', status: 'leased', responseTime: '0.3 hrs', days: 7 },
+    { date: 'Apr 14', name: 'Emily S.', source: 'zillow', property: '200 Pine St, Unit 1A', status: 'qualified', responseTime: '1.8 hrs', days: 8 },
+    { date: 'Apr 13', name: 'Kevin D.', source: 'website', property: '310 Maple Dr, Unit 5', status: 'lost', responseTime: '6.2 hrs', days: 9 },
+    { date: 'Apr 12', name: 'Rachel N.', source: 'zillow', property: '45 Elm St, Unit 2C', status: 'applied', responseTime: '1.1 hrs', days: 10 },
+    { date: 'Apr 11', name: 'Brian G.', source: 'website', property: '88 Birch Ln, Unit 1', status: 'leased', responseTime: '0.5 hrs', days: 11 },
+    { date: 'Apr 10', name: 'Nicole F.', source: 'facebook', property: '55 Cedar St, Unit 3A', status: 'lost', responseTime: '8.7 hrs', days: 12 },
+  ],
+};
+
+// =============================================================================
+// RENT MANAGER API INTEGRATION (uncomment to use live data)
+// =============================================================================
+/*
+async function fetchRentManagerData() {
+  const headers = {
+    'Authorization': `Bearer ${RM_API_KEY}`,
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    // Fetch prospects from the last 30 days
+    const since = new Date();
+    since.setDate(since.getDate() - 30);
+    const sinceStr = since.toISOString().split('T')[0];
+
+    const response = await fetch(
+      `${RM_API_BASE}/Prospects?filters=DateCreated ge '${sinceStr}'&embeds=ProspectStatus,ProspectSource`,
+      { headers }
+    );
+
+    if (!response.ok) throw new Error(`API ${response.status}`);
+    const prospects = await response.json();
+
+    // Fetch vacancies
+    const unitsResponse = await fetch(
+      `${RM_API_BASE}/Units?filters=IsVacant eq true`,
+      { headers }
+    );
+    const vacantUnits = await unitsResponse.json();
+
+    // Transform API data into SAMPLE_DATA format
+    // ... map prospects to the structure above ...
+    // Then call renderDashboard() with the transformed data
+
+  } catch (err) {
+    console.error('Rent Manager API error:', err);
+    // Falls back to sample data
+  }
+}
+// fetchRentManagerData();
+*/
+
+// =============================================================================
+// RENDER DASHBOARD
+// =============================================================================
+function renderDashboard() {
+  const data = SAMPLE_DATA;
+  const k = data.kpis;
+
+  // Timestamp
+  document.getElementById('lastUpdated').textContent =
+    'Updated: ' + new Date().toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+  // KPIs
+  const pctChange = (curr, prev) => {
+    const change = ((curr - prev) / prev * 100).toFixed(1);
+    return { value: Math.abs(change), direction: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral', raw: parseFloat(change) };
+  };
+
+  const setKPI = (id, value, trend, trendLabel) => {
+    document.getElementById(id).textContent = value;
+    const trendEl = document.getElementById(id + 'Trend');
+    if (trendEl && trend) {
+      trendEl.className = 'kpi-trend ' + trend.direction;
+      const arrow = trend.direction === 'up' ? '&#9650;' : trend.direction === 'down' ? '&#9660;' : '&#9644;';
+      trendEl.innerHTML = `${arrow} ${trend.value}% ${trendLabel || 'vs prior period'}`;
+    }
+  };
+
+  setKPI('kpiTotalLeads', k.totalLeads, pctChange(k.totalLeads, k.totalLeadsPrior));
+  document.getElementById('kpiTotalLeadsSub').textContent =
+    `${Math.round(k.totalLeads / 30 * 7)}/week avg across 3 sources`;
+
+  const rtTrend = pctChange(k.avgResponseTimePriorHrs, k.avgResponseTimeHrs); // reversed: lower is better
+  setKPI('kpiResponseTime', k.avgResponseTimeHrs + 'h', rtTrend);
+
+  setKPI('kpiQualRate', k.qualificationRate + '%', pctChange(k.qualificationRate, k.qualificationRatePrior));
+  document.getElementById('kpiQualRateSub').textContent =
+    `${Math.round(k.totalLeads * k.qualificationRate / 100)} of ${k.totalLeads} leads qualified`;
+
+  setKPI('kpiLeaseRate', k.leadToLeaseRate + '%', pctChange(k.leadToLeaseRate, k.leadToLeaseRatePrior));
+
+  const ptTrend = pctChange(k.avgProcessingDaysPrior, k.avgProcessingDays);
+  setKPI('kpiProcessTime', k.avgProcessingDays + 'd', ptTrend);
+
+  setKPI('kpiPipeline', k.activePipeline, pctChange(k.activePipeline, k.activePipelinePrior));
+
+  const vacTrend = pctChange(k.vacancyRatePrior, k.vacancyRate);
+  setKPI('kpiVacancy', k.vacancyRate + '%', vacTrend);
+  document.getElementById('kpiVacancySub').textContent = `${k.vacantUnits} of 338 units vacant`;
+
+  const cplTrend = pctChange(k.costPerLeadPrior, k.costPerLead);
+  setKPI('kpiCPL', '$' + k.costPerLead.toFixed(0), cplTrend);
+
+  // Charts
+  const chartDefaults = {
+    color: '#9ca3b4',
+    borderColor: '#2a2e3d',
+    font: { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+  };
+  Chart.defaults.color = chartDefaults.color;
+  Chart.defaults.borderColor = chartDefaults.borderColor;
+  Chart.defaults.font.family = chartDefaults.font.family;
+
+  // Lead Volume Trend (stacked area)
+  new Chart(document.getElementById('chartLeadVolume'), {
+    type: 'line',
+    data: {
+      labels: data.dailyLeads.map(d => d.date),
+      datasets: [
+        {
+          label: 'YB Website',
+          data: data.dailyLeads.map(d => d.website),
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.1)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+        },
+        {
+          label: 'Zillow',
+          data: data.dailyLeads.map(d => d.zillow),
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.1)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+        },
+        {
+          label: 'Facebook',
+          data: data.dailyLeads.map(d => d.facebook),
+          borderColor: '#a855f7',
+          backgroundColor: 'rgba(168,85,247,0.1)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, padding: 20, boxWidth: 8 } },
+        tooltip: {
+          backgroundColor: '#1a1d27',
+          borderColor: '#2a2e3d',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            footer: (items) => 'Total: ' + items.reduce((s, i) => s + i.raw, 0),
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 10, font: { size: 11 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(42,46,61,0.5)' }, ticks: { stepSize: 2, font: { size: 11 } } },
+      },
+    },
+  });
+
+  // Leads by Source (doughnut)
+  new Chart(document.getElementById('chartLeadSource'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(data.leadsBySource),
+      datasets: [{
+        data: Object.values(data.leadsBySource),
+        backgroundColor: ['#3b82f6', '#22c55e', '#a855f7'],
+        borderColor: '#1a1d27',
+        borderWidth: 3,
+        hoverOffset: 8,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } },
+        tooltip: {
+          backgroundColor: '#1a1d27',
+          borderColor: '#2a2e3d',
+          borderWidth: 1,
+          callbacks: {
+            label: (ctx) => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = (ctx.raw / total * 100).toFixed(1);
+              return ` ${ctx.label}: ${ctx.raw} leads (${pct}%)`;
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Pipeline Funnel (horizontal bar)
+  const funnelColors = ['#3b82f6','#60a5fa','#22c55e','#a855f7','#06b6d4','#14b8a6','#f5c842'];
+  new Chart(document.getElementById('chartFunnel'), {
+    type: 'bar',
+    data: {
+      labels: data.funnel.map(f => f.stage),
+      datasets: [{
+        data: data.funnel.map(f => f.count),
+        backgroundColor: funnelColors,
+        borderRadius: 4,
+        barThickness: 28,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1d27',
+          borderColor: '#2a2e3d',
+          borderWidth: 1,
+          callbacks: {
+            label: (ctx) => {
+              const total = data.funnel[0].count;
+              const pct = (ctx.raw / total * 100).toFixed(1);
+              return ` ${ctx.raw} leads (${pct}% of total)`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(42,46,61,0.5)' }, ticks: { font: { size: 11 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      },
+    },
+  });
+
+  // Response Time Distribution
+  new Chart(document.getElementById('chartResponseTime'), {
+    type: 'bar',
+    data: {
+      labels: data.responseTimeDist.map(r => r.range),
+      datasets: [{
+        data: data.responseTimeDist.map(r => r.count),
+        backgroundColor: data.responseTimeDist.map((r, i) =>
+          i <= 1 ? '#22c55e' : i <= 3 ? '#f5c842' : '#ef4444'
+        ),
+        borderRadius: 4,
+        barThickness: 24,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1d27',
+          borderColor: '#2a2e3d',
+          borderWidth: 1,
+          callbacks: {
+            label: (ctx) => {
+              const total = data.responseTimeDist.reduce((s, r) => s + r.count, 0);
+              return ` ${ctx.raw} leads (${(ctx.raw/total*100).toFixed(1)}%)`;
+            }
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(42,46,61,0.5)' }, ticks: { font: { size: 11 } } },
+      },
+    },
+  });
+
+  // Conversion by Source
+  const sources = Object.keys(data.conversionBySource);
+  new Chart(document.getElementById('chartConversionBySource'), {
+    type: 'bar',
+    data: {
+      labels: sources,
+      datasets: [
+        {
+          label: 'Total Leads',
+          data: sources.map(s => data.conversionBySource[s].leads),
+          backgroundColor: 'rgba(59,130,246,0.3)',
+          borderColor: '#3b82f6',
+          borderWidth: 1,
+          borderRadius: 4,
+          barPercentage: 0.6,
+        },
+        {
+          label: 'Leased',
+          data: sources.map(s => data.conversionBySource[s].leased),
+          backgroundColor: 'rgba(34,197,94,0.3)',
+          borderColor: '#22c55e',
+          borderWidth: 1,
+          borderRadius: 4,
+          barPercentage: 0.6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, padding: 16, boxWidth: 8, font: { size: 12 } } },
+        tooltip: {
+          backgroundColor: '#1a1d27',
+          borderColor: '#2a2e3d',
+          borderWidth: 1,
+          callbacks: {
+            afterBody: (items) => {
+              const src = items[0].label;
+              return `Conversion: ${data.conversionBySource[src].rate}%`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(42,46,61,0.5)' }, ticks: { font: { size: 11 } } },
+      },
+    },
+  });
+
+  // Pipeline Table
+  const tbody = document.getElementById('pipelineBody');
+  tbody.innerHTML = data.recentLeads.map(lead => `
+    <tr>
+      <td style="white-space:nowrap">${lead.date}</td>
+      <td style="font-weight:600;color:var(--text-primary)">${lead.name}</td>
+      <td><span class="source-badge ${lead.source}">${lead.source === 'website' ? 'YB Website' : lead.source.charAt(0).toUpperCase() + lead.source.slice(1)}</span></td>
+      <td>${lead.property}</td>
+      <td><span class="status-dot ${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span></td>
+      <td>${lead.responseTime}</td>
+      <td>${lead.days}</td>
+    </tr>
+  `).join('');
+}
+
+// Period filter
+function setPeriod(days) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.filter-btn[data-period="${days}"]`).classList.add('active');
+  // In production, this would re-fetch data for the selected period
+  // For now, just visual feedback
+}
+
+// Initialize
+renderDashboard();
+</script>
+</body>
+</html>
+
