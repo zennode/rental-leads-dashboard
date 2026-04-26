@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YellowBrick Management â Rental Leads Dashboard</title>
+<title>YellowBrick Management Ã¢ÂÂ Rental Leads Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
@@ -76,12 +76,12 @@
 <div class="header">
   <div>
     <h1>YellowBrick Rental Leads Dashboard</h1>
-    <div class="subtitle">YellowBrick Management â Western MA Portfolio</div>
+    <div class="subtitle">YellowBrick Management Ã¢ÂÂ Western MA Portfolio</div>
   </div>
   <div style="display: flex; gap: 12px; align-items: center;">
-    <span class="badge">8,119 RM Prospects</span>
-    <span class="badge" style="background: var(--green);">91 Zillow Leads</span>
-    <span class="updated">Updated: Apr 22, 2026</span>
+    <span class="badge">8,130 RM Prospects</span>
+    <span class="badge" style="background: var(--green);">128 Zillow Leads</span>
+    <span class="updated">Updated: Apr 25, 2026</span>
   </div>
 </div>
 
@@ -89,26 +89,26 @@
 
   <div class="info-box">
     <h4>Data Sources: Rent Manager API + Zillow Rental Manager</h4>
-    <p>RM data pulled from yellow.api.rentmanager.com (8,119 prospects since July 2014). Zillow data pulled from zillow.com/rental-manager (91 leads, last 90 days). Lead sources are <strong>not tracked</strong> in Rent Manager â the ApplicationFieldLeadSources table is empty. Zillow leads don't auto-feed into RM.</p>
+    <p>RM data pulled from yellow.api.rentmanager.com (8,130 prospects since July 2014). Zillow data pulled from zillow.com/rental-manager (128 leads across 4 properties). Lead sources are <strong>not tracked</strong> in Rent Manager Ã¢ÂÂ the ApplicationFieldLeadSources table is empty. Zillow leads don't auto-feed into RM.</p>
   </div>
 
   <!-- KPI Cards -->
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="label">Total Prospects (All Time)</div>
-      <div class="value">8,119</div>
+      <div class="value">8,130</div>
       <div class="detail">Since July 2014</div>
       <div class="bar" style="background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);"></div>
     </div>
     <div class="kpi-card">
       <div class="label">April 2026 (MTD)</div>
-      <div class="value" style="color: var(--green);">105</div>
+      <div class="value" style="color: var(--green);">116</div>
       <div class="detail">New prospects this month so far</div>
     </div>
     <div class="kpi-card">
       <div class="label">Conversion Rate (All Time)</div>
       <div class="value">8.5%</div>
-      <div class="detail">691 customers / 8,119 leads</div>
+      <div class="detail">6128 customers / 8,130 leads</div>
       <div class="bar" style="background: linear-gradient(90deg, var(--green) 8.5%, var(--border) 8.5%);"></div>
     </div>
     <div class="kpi-card">
@@ -130,14 +130,14 @@
   </div>
 
   <div class="alert-box">
-    <h4>â  Lead Source Tracking Gap</h4>
+    <h4>Ã¢ÂÂ  Lead Source Tracking Gap</h4>
     <p>Zillow leads are not flowing into Rent Manager automatically. Tenants are texted to apply via the portal, but many don't follow through. There is currently no way to attribute which leads came from which source. Recommendation: start tagging lead source in the Comment field or enable the LeadSource field in RM to unlock source-level conversion analysis.</p>
   </div>
 
   <!-- Zillow Section -->
   <div style="margin-bottom: 24px;">
     <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--green);">
-      <span style="color: var(--green);">â¶</span> Zillow Rental Manager â Last 90 Days
+      <span style="color: var(--green);">Ã¢ÂÂ¶</span> Zillow Rental Manager Ã¢ÂÂ Last 90 Days
     </h2>
     <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
       <div class="kpi-card">
@@ -170,7 +170,7 @@
     <div class="chart-grid">
       <div class="chart-card">
         <h3>Zillow Leads by Property</h3>
-        <div class="chart-subtitle">90-day snapshot â 3 active properties</div>
+        <div class="chart-subtitle">90-day snapshot Ã¢ÂÂ 3 active properties</div>
         <canvas id="zillowPropertyChart" height="180"></canvas>
       </div>
       <div class="chart-card">
@@ -182,30 +182,30 @@
 
     <div class="info-box" style="border-left-color: var(--green);">
       <h4 style="color: var(--green);">Cross-Property Leads</h4>
-      <p>6 leads inquired about multiple YBM properties: Gregory Greene, Logan Mateo, Nickolas Borowski, Dieuna Duplan, James Hesseltine, Davien Santos â all looked at both Stadler units in Belchertown. These high-intent leads are worth prioritizing.</p>
+      <p>6 leads inquired about multiple YBM properties: Gregory Greene, Logan Mateo, Nickolas Borowski, Dieuna Duplan, James Hesseltine, Davien Santos Ã¢ÂÂ all looked at both Stadler units in Belchertown. These high-intent leads are worth prioritizing.</p>
     </div>
   </div>
 
   <!-- RM Charts -->
   <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue);">
-    <span style="color: var(--blue);">â¶</span> Rent Manager â Full Historical Pipeline
+    <span style="color: var(--blue);">Ã¢ÂÂ¶</span> Rent Manager Ã¢ÂÂ Full Historical Pipeline
   </h2>
   <div class="chart-grid">
     <div class="chart-card full">
       <h3>Monthly Lead Volume</h3>
-      <div class="chart-subtitle">All prospects by month â full history (2014â2026)</div>
+      <div class="chart-subtitle">All prospects by month Ã¢ÂÂ full history (2014Ã¢ÂÂ2026)</div>
       <canvas id="volumeChart" height="80"></canvas>
     </div>
 
     <div class="chart-card">
       <h3>Monthly Lead Volume (Last 12 Months)</h3>
-      <div class="chart-subtitle">May 2025 â April 2026</div>
+      <div class="chart-subtitle">May 2025 Ã¢ÂÂ April 2026</div>
       <canvas id="recentVolumeChart" height="160"></canvas>
     </div>
 
     <div class="chart-card">
       <h3>Outcome Breakdown (All Time)</h3>
-      <div class="chart-subtitle">Final status of all 8,119 prospects</div>
+      <div class="chart-subtitle">Final status of all 8,130 prospects</div>
       <canvas id="statusChart" height="160"></canvas>
     </div>
 
@@ -228,13 +228,13 @@
   </div>
 
   <div class="footer">
-    Data: Rent Manager API + Zillow Rental Manager Â· Automated via Cowork Â· Last updated Apr 22, 2026
+    Data: Rent Manager API + Zillow Rental Manager ÃÂ· Automated via Cowork ÃÂ· Last updated Apr 25, 2026
   </div>
 </div>
 
 <script>
 // ============================================================
-// REAL DATA from Rent Manager API â 8,119 prospects, pages 1-5
+// REAL DATA from Rent Manager API Ã¢ÂÂ 8,130 prospects, pages 1-5
 // ============================================================
 
 const monthlyData = {
@@ -261,7 +261,7 @@ const monthlyData = {
   '2024-07': 229, '2024-08': 203, '2024-09': 205, '2024-10': 260, '2024-11': 92, '2024-12': 89,
   '2025-01': 172, '2025-02': 141, '2025-03': 210, '2025-04': 170, '2025-05': 226, '2025-06': 159,
   '2025-07': 104, '2025-08': 88, '2025-09': 146, '2025-10': 196, '2025-11': 145, '2025-12': 56,
-  '2026-01': 88, '2026-02': 133, '2026-03': 243, '2026-04': 105
+  '2026-01': 88, '2026-02': 133, '2026-03': 243, '2026-04': 116
 };
 
 // Status totals across all pages
@@ -392,9 +392,9 @@ new Chart(document.getElementById('seasonChart'), {
 new Chart(document.getElementById('zillowPropertyChart'), {
   type: 'bar',
   data: {
-    labels: ['3 Stadler #C11\nBelchertown', '17-21 Allyn\nHolyoke', '1 Stadler #G1\nBelchertown'],
+    labels: ['3 Stadler #C11\nBelchertown', '11 Highland Park\nEnfield CT', '17-21 Allyn\nHolyoke'],
     datasets: [{
-      data: [53, 29, 16],
+      data: [57, 37, 28],
       backgroundColor: ['#17bf63', '#1da1f2', '#794bc4'],
       borderRadius: 6,
       barPercentage: 0.6
@@ -415,9 +415,9 @@ new Chart(document.getElementById('zillowPropertyChart'), {
 new Chart(document.getElementById('zillowStatusChart'), {
   type: 'doughnut',
   data: {
-    labels: ['Tour Requested (40)', 'Application Requested (36)', 'Inquired (21)'],
+    labels: ['Tour Requested (52)', 'Application Requested (45)', 'Inquired (31)'],
     datasets: [{
-      data: [40, 36, 21],
+      data: [52, 45, 31],
       backgroundColor: ['#1da1f2', '#17bf63', '#8899a6'],
       borderWidth: 0
     }]
