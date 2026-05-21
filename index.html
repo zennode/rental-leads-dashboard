@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+h<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -79,9 +79,9 @@
     <div class="subtitle">YellowBrick Management ÃÂ¢ÃÂÃÂ Western MA Portfolio</div>
   </div>
   <div style="display: flex; gap: 12px; align-items: center;">
-    <span class="badge">8,263 RM Prospects</span>
+    <span class="badge">8,270 RM Prospects</span>
     <span class="badge" style="background: var(--green);">128 Zillow Leads</span>
-    <span class="updated">Updated: May 18, 2026</span>
+    <span class="updated">Updated: May 21, 2026</span>
   </div>
 </div>
 
@@ -89,32 +89,32 @@
 
   <div class="info-box">
     <h4>Data Sources: Rent Manager API + Zillow Rental Manager</h4>
-    <p>RM data pulled from yellow.api.rentmanager.com (8,263 prospects since July 2014). Zillow data pulled from zillow.com/rental-manager (128 leads across 4 properties). Lead sources are <strong>not tracked</strong> in Rent Manager ÃÂ¢ÃÂÃÂ the ApplicationFieldLeadSources table is empty. Zillow leads don't auto-feed into RM.</p>
+    <p>RM data pulled from yellow.api.rentmanager.com (8,270 prospects since July 2014). Zillow data pulled from zillow.com/rental-manager (128 leads across 4 properties). Lead sources are <strong>not tracked</strong> in Rent Manager ÃÂ¢ÃÂÃÂ the ApplicationFieldLeadSources table is empty. Zillow leads don't auto-feed into RM.</p>
   </div>
 
   <!-- KPI Cards -->
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="label">Total Prospects (All Time)</div>
-      <div class="value">8,263</div>
+      <div class="value">8,270</div>
       <div class="detail">Since July 2014</div>
       <div class="bar" style="background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);"></div>
     </div>
     <div class="kpi-card">
       <div class="label">May 2026 (MTD)</div>
-      <div class="value" style="color: var(--green);">108</div>
-      <div class="detail">New prospects this month so far</div>
+      <div class="value" style="color: var(--green);">115</div>
+      <div class="detail">New prospects this month so far (as of May 21)</div>
     </div>
     <div class="kpi-card">
       <div class="label">Conversion Rate (All Time)</div>
       <div class="value">8.4%</div>
-      <div class="detail">6128 customers / 8,263 leads</div>
+      <div class="detail">6128 customers / 8,270 leads</div>
       <div class="bar" style="background: linear-gradient(90deg, var(--green) 8.4%, var(--border) 8.4%);"></div>
     </div>
     <div class="kpi-card">
       <div class="label">Active Prospects</div>
-      <div class="value" style="color: var(--yellow);">46</div>
-      <div class="detail">Open leads in pipeline now</div>
+      <div class="value" style="color: var(--yellow);">28</div>
+      <div class="detail">28 active (Prospect status), 7 applicants, 3 approved</div>
     </div>
     <div class="kpi-card">
       <div class="label">Lost (All Time)</div>
@@ -205,7 +205,7 @@
 
     <div class="chart-card">
       <h3>Outcome Breakdown (All Time)</h3>
-      <div class="chart-subtitle">Final status of all 8,263 prospects</div>
+      <div class="chart-subtitle">Final status of all 8,270 prospects</div>
       <canvas id="statusChart" height="160"></canvas>
     </div>
 
@@ -228,13 +228,13 @@
   </div>
 
   <div class="footer">
-    Data: Rent Manager API + Zillow Rental Manager ÃÂÃÂ· Automated via Cowork ÃÂÃÂ· Last updated May 18, 2026
+    Data: Rent Manager API + Zillow Rental Manager ÃÂÃÂ· Automated via Cowork ÃÂÃÂ· Last updated May 21, 2026
   </div>
 </div>
 
 <script>
 // ============================================================
-// REAL DATA from Rent Manager API ÃÂ¢ÃÂÃÂ 8,263 prospects, pages 1-5
+// REAL DATA from Rent Manager API ÃÂ¢ÃÂÃÂ 8,270 prospects, pages 1-5
 // 6128 customers / 8,227
 const monthlyData = {
   '2014-07': 28, '2014-08': 30, '2014-09': 4, '2014-10': 6, '2014-11': 10, '2014-12': 5,
@@ -260,7 +260,7 @@ const monthlyData = {
   '2024-07': 229, '2024-08': 203, '2024-09': 205, '2024-10': 260, '2024-11': 92, '2024-12': 89,
   '2025-01': 172, '2025-02': 141, '2025-03': 210, '2025-04': 170, '2025-05': 226, '2025-06': 159,
   '2025-07': 104, '2025-08': 88, '2025-09': 146, '2025-10': 196, '2025-11': 145, '2025-12': 56,
-  '2026-01': 88, '2026-02': 133, '2026-03': 243, '2026-04': 127,            '2026-05': 108
+  '2026-01': 88, '2026-02': 133, '2026-03': 243, '2026-04': 127,            '2026-05': 115
 };
 
 // Status totals across all pages
@@ -268,7 +268,7 @@ const statusTotals = {
   'Customer': 691,    // 566 + 35 + 37 + 52 + 1
   'Lost': 7314,       // 1408 + 1964 + 1960 + 1888 + 94
   'LostRejected': 87, // 26 + 1 + 3 + 57
-  'Prospect': 46      // 25 + 3
+  'Prospect': 28      // 25 + 3
 };
 
 // Yearly data (computed from monthly)
@@ -340,9 +340,9 @@ new Chart(document.getElementById('recentVolumeChart'), {
 new Chart(document.getElementById('statusChart'), {
   type: 'doughnut',
   data: {
-    labels: ['Lost (7,314)', 'Customer (691)', 'Lost/Rejected (87)', 'Active Prospect (46)'],
+    labels: ['Lost (7,314)', 'Customer (691)', 'Lost/Rejected (87)', 'Active Prospect (28)'],
     datasets: [{
-      data: [7314, 691, 87, 46],
+      data: [7314, 691, 87, 28],
       backgroundColor: ['#e0245e', '#17bf63', '#ffad1f', '#1da1f2'],
       borderWidth: 0
     }]
